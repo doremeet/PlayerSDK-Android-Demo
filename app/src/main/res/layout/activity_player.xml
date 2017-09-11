@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000">
+
+    <com.iband.playersdk.IBandPlayerView
+        android:id="@+id/view_player"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000"></com.iband.playersdk.IBandPlayerView>
+
+    <FrameLayout
+        android:id="@+id/imgSnow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/snow"></ImageView>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_no_cam"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="camera is not available"
+                android:textColor="#fff"
+                android:textSize="16dp"/>
+        </LinearLayout>
+
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <View
+            android:layout_width="match_parent"
+
+            android:layout_height="80dp"
+            android:background="@drawable/drw_gradiant_top"></View>
+
+        <ImageView
+            android:id="@+id/btn_play_pause"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:padding="4dp"
+            android:src="@drawable/ic_player_pause"
+            android:visibility="gone"/>
+
+        <FrameLayout
+            android:id="@+id/leftActionBar"
+            android:layout_width="56dp"
+            android:layout_height="match_parent"
+            >
+
+            <ImageView
+                android:id="@+id/btn_video_scale"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center|left"
+                android:layout_marginLeft="16dp"
+                android:alpha="0.6"
+                android:src="@drawable/ic_zoom_out_map_white_36dp"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/btn_vr_mode"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center|left"
+                android:layout_marginBottom="24dp"
+                android:layout_marginLeft="16dp"
+                android:src="@drawable/ic_player_vr_gr"
+                android:visibility="gone"/>
+
+
+        </FrameLayout>
+
+
+        <LinearLayout
+            android:id="@+id/bottom_action_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@drawable/drw_gradiant_bottom"
+            android:gravity="right"
+            android:orientation="horizontal"
+            android:padding="8dp">
+
+            <LinearLayout
+                android:id="@+id/position_action_bar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                >
+
+                <TextView
+                    android:id="@+id/tv_position"
+                    android:layout_width="44dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="00:00"
+                    android:textColor="#fff"
+                    android:textSize="14dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="/"
+                    android:textColor="#fff"
+                    android:textSize="14dp"/>
+
+                <TextView
+                    android:id="@+id/tv_duration"
+                    android:layout_width="44dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="00:00"
+                    android:textColor="#fff"
+                    android:textSize="14dp"/>
+
+                <SeekBar
+                    android:id="@+id/sb_position"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+
+
+
+            <ImageView
+                android:id="@+id/btn_variant"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="right|center_vertical"
+                android:layout_margin="8dp"
+                android:padding="4dp"
+                android:src="@drawable/ic_settings_btn"
+                />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/lv_settings"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:layout_marginBottom="64dp"
+            android:background="#4000">
+
+        </ListView>
+
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="8dp"
+            android:padding="8dp"
+            android:src="@drawable/back"/>
+
+        <ImageView
+            android:id="@+id/vLive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="8dp"
+            android:padding="8dp"
+            android:src="@drawable/ic_live"
+            android:visibility="gone"/>
+    </FrameLayout>
+
+    <ProgressBar
+        android:id="@+id/progress_player"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+
+    <ProgressBar
+        android:id="@+id/progress_stream"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_logo_btn"/>
+
+    <FrameLayout
+        android:id="@+id/btn_center"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="center|left"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="24dp"
+        android:visibility="gone"
+        >
+
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="2dp"
+            android:layout_gravity="center_horizontal"
+            android:background="#fff"></View>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center|left"
+            android:layout_margin="2dp"
+            android:background="@drawable/drw_circle"
+            >
+
+            <ImageView
+                android:id="@+id/view_direction"
+
+                android:layout_width="16dp"
+                android:layout_height="26dp"
+                android:layout_gravity="center"
+                android:paddingBottom="12dp"
+                android:src="@drawable/ic_360_rot"
+                />
+        </FrameLayout>
+    </FrameLayout>
+
+</FrameLayout>
