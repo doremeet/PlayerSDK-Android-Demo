@@ -12,7 +12,6 @@
         android:background="#000"></com.iband.playersdk.IBandPlayerView>
 
     <FrameLayout
-        android:id="@+id/imgSnow"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone">
@@ -66,7 +65,6 @@
             android:visibility="gone"/>
 
         <FrameLayout
-            android:id="@+id/leftActionBar"
             android:layout_width="56dp"
             android:layout_height="match_parent"
             >
