@@ -8,10 +8,10 @@ Demo player with IBandSDK player for Andorid.
 
 **StreamId** Go to PlayerActivity class and put the demo StreamId into STREAM_ID (located in the top of class).
 
-**Step 1.** Add the JitPack repository to your build file
-
 
 ## Getting Started
+
+**Step 1.** Add the JitPack repository to your build file
 
 Add it in your root build.gradle at the end of repositories:
 
