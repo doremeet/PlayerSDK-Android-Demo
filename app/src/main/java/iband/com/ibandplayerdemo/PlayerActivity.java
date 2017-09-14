@@ -28,8 +28,8 @@ import iband.com.ibandplayerdemo.adapter.VariantHolder;
 
 public class PlayerActivity extends AppCompatActivity implements IBandPlayer.Listener, IBandStream.Listener {
 
-    private static final String STREAM_ID = "5994219bbc454f6edf961315";
-    private boolean mIsThreadPositionActive;
+    private static final String STREAM_ID = "PUT_HERE_STREAM_ID";
+    private boolean mIsThreadRotationActive;
     private boolean mIsUserChangePosition;
     private int mDisplayMode;
     private long mLastDuration = 0;
@@ -51,7 +51,7 @@ public class PlayerActivity extends AppCompatActivity implements IBandPlayer.Lis
     private ListView mLvSettings;
     private SeekBar mSbPosition;
     private IBandPlayerView mViewPLayer;
-    private Thread mThreadUpdatePosition;
+    private Thread mThreadUpdateRotation;
     private VariantAdapter mVariantAdapter;
     private ArrayList<VariantHolder> mVariants;
     private IBandSDK mIBandSDK;
@@ -72,28 +72,18 @@ public class PlayerActivity extends AppCompatActivity implements IBandPlayer.Lis
     @Override
     public void onPlayerStateChanged(IBandPlayer iBandPlayer, IBandBasePlayer.State state, IBandBasePlayer.State old) {
         if (state == IBandBasePlayer.State.READY) {
-            mProgressPlayer.setVisibility(View.GONE);
-            mViewPLayer.setVisibility(View.VISIBLE);
-            mBtnVariant.setVisibility(View.VISIBLE);
-            mViewPLayer.resetPanoramaPosition();
+            updateViewsOnStateReady();
         } else if (state == IBandBasePlayer.State.BUFFER || state == IBandBasePlayer.State.INITIALIZE)
             mProgressPlayer.setVisibility(View.VISIBLE);
         if (old == IBandBasePlayer.State.INITIALIZE) {
             if (mStream.getStructure() == IBandStream.Structure.PLAIN) {
-                mViewPLayer.setState(IBandPlayerView.DisplayState.PLAIN);
-                mBtnCenter.setVisibility(View.GONE);
-                mBtnVrMode.setVisibility(View.GONE);
-                mBtnVideoScale.setVisibility(View.VISIBLE);
-                stopThreadUpdateRotation();
+                updateViewsOnDisplayStatePlain();
             } else if (mStream.getStructure() == IBandStream.Structure.EQUIRECTANGULAR) {
-                mViewPLayer.setState(IBandPlayerView.DisplayState.EQUIRECTANGULAR);
-                mBtnCenter.setVisibility(View.VISIBLE);
-                mBtnVrMode.setVisibility(View.VISIBLE);
-                mBtnVideoScale.setVisibility(View.GONE);
-                startThreadUpdateRotation();
+                updateViewsOnDisplayStateEquirectangular();
             }
         }
     }
+
 
     @Override
     public void onPlayerCurrentPositionUpdate(IBandPlayer player, long currentPosition) {
@@ -180,27 +170,39 @@ public class PlayerActivity extends AppCompatActivity implements IBandPlayer.Lis
     @Override
     public void onStreamStateChanged(IBandStream iBandStream, IBandStream.State state, IBandStream.State old) {
         if (old == IBandStream.State.INITIALIZE) {
-            mProgressStream.setVisibility(View.GONE);
+            updateViewsOnStreamInitialize();
         }
         if (iBandStream == mStream) {
             if (iBandStream.getState() == IBandStream.State.CLOSED) {
-                mLvSettings.setAdapter(null);
-                mLvSettings.setVisibility(View.GONE);
-                mBtnVariant.setEnabled(false);
-                mBtnVariant.setVisibility(View.INVISIBLE);
-                mProgressStream.setVisibility(View.GONE);
-                mProgressPlayer.setVisibility(View.GONE);
-                mViewLive.setVisibility(View.GONE);
-                mBtnCenter.setVisibility(View.GONE);
-                mBtnVrMode.setVisibility(View.GONE);
-                mBtnVideoScale.setVisibility(View.GONE);
+                updateViewOnStreamStateClosed();
             } else {
-                if (mStream.getType() == IBandStream.Type.LIVE)
-                    mViewLive.setVisibility(View.VISIBLE);
-                else
-                    mViewLive.setVisibility(View.GONE);
+                updateViewsOnStreamStateNotClose();
             }
         }
+    }
+
+    private void updateViewsOnStreamInitialize() {
+        mProgressStream.setVisibility(View.GONE);
+    }
+
+    private void updateViewsOnStreamStateNotClose() {
+        if (mStream.getType() == IBandStream.Type.LIVE)
+            mViewLive.setVisibility(View.VISIBLE);
+        else
+            mViewLive.setVisibility(View.GONE);
+    }
+
+    private void updateViewOnStreamStateClosed() {
+        mLvSettings.setAdapter(null);
+        mLvSettings.setVisibility(View.GONE);
+        mBtnVariant.setEnabled(false);
+        mBtnVariant.setVisibility(View.INVISIBLE);
+        mProgressStream.setVisibility(View.GONE);
+        mProgressPlayer.setVisibility(View.GONE);
+        mViewLive.setVisibility(View.GONE);
+        mBtnCenter.setVisibility(View.GONE);
+        mBtnVrMode.setVisibility(View.GONE);
+        mBtnVideoScale.setVisibility(View.GONE);
     }
 
     @Override
@@ -212,6 +214,7 @@ public class PlayerActivity extends AppCompatActivity implements IBandPlayer.Lis
         if (getSupportActionBar() != null)
             getSupportActionBar().hide();
         initViews();
+        initViewsListeners();
         initPlayer();
 
     }
@@ -248,12 +251,35 @@ public class PlayerActivity extends AppCompatActivity implements IBandPlayer.Lis
         super.onDestroy();
     }
 
+    private void updateViewsOnDisplayStateEquirectangular() {
+        mViewPLayer.setState(IBandPlayerView.DisplayState.EQUIRECTANGULAR);
+        mBtnCenter.setVisibility(View.VISIBLE);
+        mBtnVrMode.setVisibility(View.VISIBLE);
+        mBtnVideoScale.setVisibility(View.GONE);
+        startThreadUpdateRotation();
+    }
+
+    private void updateViewsOnDisplayStatePlain() {
+        mViewPLayer.setState(IBandPlayerView.DisplayState.PLAIN);
+        mBtnCenter.setVisibility(View.GONE);
+        mBtnVrMode.setVisibility(View.GONE);
+        mBtnVideoScale.setVisibility(View.VISIBLE);
+        stopThreadUpdateRotation();
+    }
+
+    private void updateViewsOnStateReady() {
+        mProgressPlayer.setVisibility(View.GONE);
+        mViewPLayer.setVisibility(View.VISIBLE);
+        mBtnVariant.setVisibility(View.VISIBLE);
+        mViewPLayer.resetPanoramaPosition();
+    }
+
     private void startThreadUpdateRotation() {
         stopThreadUpdateRotation();
         if (mStream == null || mStream.getStructure() != IBandStream.Structure.EQUIRECTANGULAR)
             return;
-        mIsThreadPositionActive = true;
-        mThreadUpdatePosition = new Thread() {
+        mIsThreadRotationActive = true;
+        mThreadUpdateRotation = new Thread() {
             public Runnable mRunnableUpdateRotation = new Runnable() {
                 @Override
                 public void run() {
@@ -263,7 +289,7 @@ public class PlayerActivity extends AppCompatActivity implements IBandPlayer.Lis
 
             @Override
             public void run() {
-                while (mIsThreadPositionActive) {
+                while (mIsThreadRotationActive) {
                     try {
                         Thread.sleep(50);
                     } catch (InterruptedException e) {
@@ -273,15 +299,15 @@ public class PlayerActivity extends AppCompatActivity implements IBandPlayer.Lis
                 }
             }
         };
-        mThreadUpdatePosition.start();
+        mThreadUpdateRotation.start();
 
     }
 
     private void stopThreadUpdateRotation() {
-        mIsThreadPositionActive = false;
-        if (mThreadUpdatePosition != null)
-            mThreadUpdatePosition.interrupt();
-        mThreadUpdatePosition = null;
+        mIsThreadRotationActive = false;
+        if (mThreadUpdateRotation != null)
+            mThreadUpdateRotation.interrupt();
+        mThreadUpdateRotation = null;
     }
 
     private void updateViewPlayPause() {
@@ -332,10 +358,7 @@ public class PlayerActivity extends AppCompatActivity implements IBandPlayer.Lis
         mPlayer = mIBandSDK.createPlayer();
         mPlayer.addListener(this);
         mPlayer.setStream(mStream);
-        if (mStream.getType() == IBandStream.Type.LIVE)
-            mViewLive.setVisibility(View.VISIBLE);
-        else
-            mViewLive.setVisibility(View.GONE);
+        updateViewsOnStreamStateNotClose();
     }
 
     private void initViews() {
@@ -352,16 +375,21 @@ public class PlayerActivity extends AppCompatActivity implements IBandPlayer.Lis
         mPositionActionBar = findViewById(R.id.position_action_bar);
         mViewLive = findViewById(R.id.vLive);
         mBtnBack = findViewById(R.id.btnBack);
+        mBtnVrMode = (ImageView) findViewById(R.id.btn_vr_mode);
+        mBtnCenter = findViewById(R.id.btn_center);
+        mBtnVideoScale = (ImageView) findViewById(R.id.btn_video_scale);
+        mBtnPlayPause = (ImageView) findViewById(R.id.btn_play_pause);
+        mBottomActionBar = findViewById(R.id.bottom_action_bar);
+
+    }
+
+    private void initViewsListeners() {
         mBtnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
-        mBtnVrMode = (ImageView) findViewById(R.id.btn_vr_mode);
-        mBtnCenter = findViewById(R.id.btn_center);
-        mBtnVideoScale = (ImageView) findViewById(R.id.btn_video_scale);
-        mBtnPlayPause = (ImageView) findViewById(R.id.btn_play_pause);
         mBtnPlayPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -395,7 +423,6 @@ public class PlayerActivity extends AppCompatActivity implements IBandPlayer.Lis
                 mViewPLayer.setVideoScale(IBandPlayerView.VideoScale.values()[mDisplayMode]);
             }
         });
-        mBottomActionBar = findViewById(R.id.bottom_action_bar);
 
         mBtnVariant.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -435,6 +462,5 @@ public class PlayerActivity extends AppCompatActivity implements IBandPlayer.Lis
                 }
             }
         });
-
     }
 }

@@ -17,9 +17,7 @@
             </intent-filter>
 
         </activity>
-        <meta-data
-            android:name="stream_id"
-            android:value="5994219bbc454f6edf961315"/>
+
 
     </application>
 
