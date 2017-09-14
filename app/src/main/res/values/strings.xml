@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">IBand Live</string>
+    <string name="iband_token">PUT_HERE_YOUR_TOKEN</string>
+
+</resources>
